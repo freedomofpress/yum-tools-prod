@@ -1,0 +1,24 @@
+---
+version: 2.1
+common-steps:
+  - &installdeps
+    run:
+      name: Install RPM packaging dependencies
+      command: |
+        yum -y update
+jobs:
+  check-sigs:
+    docker:
+      - image: fedora:37
+    steps:
+      - checkout
+      - *installdeps
+      - run:
+          name: Verify signatures on all RPMs
+          command: |
+            gpg --import repo/public/fpf-apt-tools-archive-keyring.gpg
+            for i in dangerzone/*/*.rpm; do rpm -K "$i"; done
+workflows:
+  check-packages:
+    jobs:
+      - check-sigs

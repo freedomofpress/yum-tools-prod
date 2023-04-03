@@ -5,7 +5,7 @@ common-steps:
     run:
       name: Install RPM packaging dependencies
       command: |
-        #yum -y update
+        yum -y update && yum -y install git-lfs
 jobs:
   check-sigs:
     docker:
@@ -16,6 +16,7 @@ jobs:
       - run:
           name: Verify signatures on all RPMs
           command: |
+            git lfs install && git lfs pull
             rpm --import fpf-yum-tools-archive-keyring.gpg
             for i in dangerzone/*/*.rpm; do rpm --checksig "$i"; done
 workflows:

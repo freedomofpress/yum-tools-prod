@@ -90,7 +90,7 @@ def main():
         "--key-id",
         type=str,
         help="The key ID that will be used",
-        default="FPF Packages TESTING key <sysadmin@freedom.press>"
+        default="Dangerzone Release Key <dangerzone-release-key@freedom.press>"
     )
     parser.add_argument("packages", type=str, nargs="*", help="Files to sign/verify")
     args = parser.parse_args()

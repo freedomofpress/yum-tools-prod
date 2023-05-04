@@ -53,6 +53,8 @@ def verify_sig_rpm(path, key_id):
 def verify_all_rpms(key_id):
     for root, dirs, files in os.walk(RPM_DIR):
         for name in files:
+            if not name.endswith(".rpm"):
+                continue
             path = os.path.join(root, name)
             verify_sig_rpm(path, key_id)
 

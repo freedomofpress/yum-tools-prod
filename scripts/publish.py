@@ -26,6 +26,16 @@ def import_key(key_id, db_path):
             fail(f"Error importing key: {e}")
 
 
+def get_all_rpms():
+    rpms = []
+    for root, dirs, files in os.walk(RPM_DIR):
+        for name in files:
+            if not name.endswith(".rpm"):
+                continue
+            rpms.append(os.path.join(root, name))
+    return rpms
+
+
 def verify_sig_rpm(path, key_id):
     print(f">> Verifying {path}")
     try:
@@ -51,12 +61,8 @@ def verify_sig_rpm(path, key_id):
 
 
 def verify_all_rpms(key_id):
-    for root, dirs, files in os.walk(RPM_DIR):
-        for name in files:
-            if not name.endswith(".rpm"):
-                continue
-            path = os.path.join(root, name)
-            verify_sig_rpm(path, key_id)
+    for rpm in get_all_rpms():
+        verify_sig_rpm(rpm, key_id)
 
 
 def sign_rpm(path, key_id):
@@ -72,10 +78,8 @@ def sign_rpm(path, key_id):
 
 
 def sign_all_rpms(key_id):
-    for root, dirs, files in os.walk(RPM_DIR):
-        for name in files:
-            path = os.path.join(root, name)
-            sign_rpm(path, key_id)
+    for rpm in get_all_rpms():
+        sign_rpm(rpm, key_id)
 
 
 def fail(msg):

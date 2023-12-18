@@ -1,0 +1,21 @@
+---
+name: check-packages
+
+on: [push, pull_request]
+
+jobs:
+  check-sigs:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:37
+    steps:
+      - name: Install RPM packaging dependencies
+        run: yum -y update && yum -y install git git-lfs
+      - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: Verify signatures on all RPMs
+        run: |
+          # git lfs install && git lfs pull
+          gpg --import fpf-yum-tools-archive-keyring.gpg
+          ./scripts/publish.py --verify --all

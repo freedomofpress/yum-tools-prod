@@ -19,3 +19,57 @@ jobs:
           # git lfs install && git lfs pull
           gpg --import fpf-yum-tools-archive-keyring.gpg
           ./scripts/publish.py --verify --all
+
+  build-install-rpm:
+    name: "Install on Fedora ${{matrix.version}}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - version: "38"
+          - version: "39"
+          - version: "40"
+    steps:
+      - name: Checkout dangerzone repo
+        uses: actions/checkout@v4
+        with:
+          repository: freedomofpress/dangerzone
+          path: main
+
+      - name: Checkout yum-tools-prod repo
+        uses: actions/checkout@v4
+        with:
+          path: yum
+          lfs: 'true'
+
+      - name: mv dangerzone .rpm files
+        run: |
+          mkdir "./main/dist"
+          mv ./yum/dangerzone/f${{ matrix.version }}/*.rpm ./main/dist/.
+
+          # Rename files to -1.rpm, as expected by the
+          # `./dev_scripts/env.py build` command
+          # 
+          # This can be removed once we get back to the usual `-1` patch level.
+          pushd ./main/dist/
+          for file in dangerzone-*-2.fc*.rpm; do
+            mv "$file" "${file//-2./-1.}"
+          done
+          popd
+
+      - name: Build end-user environment
+        working-directory: main
+        run: |
+          ./dev_scripts/env.py --distro fedora --version ${{ matrix.version }} build
+
+      - name: Run a test command
+        working-directory: main
+        run: |
+          ./dev_scripts/env.py --distro fedora --version ${{ matrix.version }} \
+              run dangerzone-cli dangerzone/tests/test_docs/sample-pdf.pdf
+
+      - name: Check that the Dangerzone GUI imports work
+        working-directory: main
+        run: |
+          ./dev_scripts/env.py --distro fedora --version ${{ matrix.version }} \
+              run dangerzone --help

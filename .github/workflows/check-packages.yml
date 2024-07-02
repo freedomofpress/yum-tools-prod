@@ -7,11 +7,11 @@ jobs:
   check-sigs:
     runs-on: ubuntu-latest
     container:
-      image: fedora:37
+      image: fedora:40
     steps:
       - name: Install RPM packaging dependencies
         run: yum -y update && yum -y install git git-lfs
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           lfs: true
       - name: Verify signatures on all RPMs
@@ -26,7 +26,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - version: "38"
           - version: "39"
           - version: "40"
     steps:
@@ -46,16 +45,6 @@ jobs:
         run: |
           mkdir "./main/dist"
           mv ./yum/dangerzone/f${{ matrix.version }}/*.rpm ./main/dist/.
-
-          # Rename files to -1.rpm, as expected by the
-          # `./dev_scripts/env.py build` command
-          # 
-          # This can be removed once we get back to the usual `-1` patch level.
-          pushd ./main/dist/
-          for file in dangerzone-*-2.fc*.rpm; do
-            mv "$file" "${file//-2./-1.}"
-          done
-          popd
 
       - name: Build end-user environment
         working-directory: main

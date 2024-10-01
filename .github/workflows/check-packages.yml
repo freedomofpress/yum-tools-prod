@@ -41,6 +41,10 @@ jobs:
           path: yum
           lfs: 'true'
 
+      - name: update version from the package
+        run: |
+          echo ./yum/dangerzone/f${{ matrix.version }}/dangerzone-qubes*.src.rpm | sed 's/.*-\([^-]*\)-[^-]*\.*\.src\.rpm/\1/' > ./main/share/version.txt
+
       - name: mv dangerzone .rpm files
         run: |
           mkdir "./main/dist"

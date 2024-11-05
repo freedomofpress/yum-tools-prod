@@ -59,7 +59,7 @@ jobs:
         working-directory: main
         run: |
           ./dev_scripts/env.py --distro fedora --version ${{ matrix.version }} \
-              run dangerzone-cli dangerzone/tests/test_docs/sample-pdf.pdf
+              run dangerzone-cli dangerzone/tests/test_docs/sample-pdf.pdf --ocr-lang eng
 
       - name: Check that the Dangerzone GUI imports work
         working-directory: main

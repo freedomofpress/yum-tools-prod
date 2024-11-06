@@ -26,6 +26,7 @@ jobs:
     strategy:
       matrix:
         include:
+          - version: "39"
           - version: "40"
           - version: "41"
     steps:

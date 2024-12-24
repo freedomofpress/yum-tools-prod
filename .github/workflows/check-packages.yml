@@ -43,7 +43,8 @@ jobs:
 
       - name: update version from the package
         run: |
-          echo ./yum/dangerzone/f${{ matrix.version }}/dangerzone-qubes*.src.rpm | sed 's/.*-\([^-]*\)-[^-]*\.*\.src\.rpm/\1/' > ./main/share/version.txt
+          rm ./yum/dangerzone/f${{ matrix.version }}/*qubes* # remove the qubes versions for now
+          echo ./yum/dangerzone/f${{ matrix.version }}/dangerzone-*.src.rpm | sed 's/.*-\([^-]*\)-[^-]*\.*\.src\.rpm/\1/' > ./main/share/version.txt
 
       - name: mv dangerzone .rpm files
         run: |

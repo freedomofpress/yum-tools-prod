@@ -28,6 +28,7 @@ jobs:
         include:
           - version: "40"
           - version: "41"
+          - version: "42"
     steps:
       - name: Checkout dangerzone repo
         uses: actions/checkout@v4

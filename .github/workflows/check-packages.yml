@@ -7,10 +7,10 @@ jobs:
   check-sigs:
     runs-on: ubuntu-latest
     container:
-      image: fedora:40
+      image: fedora:42
     steps:
       - name: Install RPM packaging dependencies
-        run: yum -y update && yum -y install git git-lfs
+        run: yum -y update && yum -y install git git-lfs gnupg2
       - uses: actions/checkout@v4
         with:
           lfs: true
@@ -26,7 +26,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - version: "40"
           - version: "41"
           - version: "42"
     steps:
